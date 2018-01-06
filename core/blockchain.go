@@ -156,9 +156,9 @@ func NewBlockChain(chainDb ethdb.Database, config *params.ChainConfig, engine co
 	}
 	// Check the current state of the block hashes and make sure that we do not have any of the bad blocks in our chain
 	for hash := range BadHashes {
-		if header := bc.ballstesteaderByHash(hash); header != nil {
+		if header := bc.GetHeaderByHash(hash); header != nil {
 			// get the canonical block corresponding to the offending header's number
-			headerByNumber := bc.ballstesteaderByNumber(header.Number.Uint64())
+			headerByNumber := bc.GetHeaderByNumber(header.Number.Uint64())
 			// make sure the headerByNumber (if present) is in our current canonical chain
 			if headerByNumber != nil && headerByNumber.Hash() == header.Hash() {
 				log.Error("Found bad hash, rewinding chain", "number", header.Number, "hash", header.ParentHash)
@@ -205,7 +205,7 @@ func (bc *BlockChain) loadLastState() error {
 	// Restore the last known head header
 	currentHeader := bc.currentBlock.Header()
 	if head := ballstesteadHeaderHash(bc.chainDb); head != (common.Hash{}) {
-		if header := bc.ballstesteaderByHash(head); header != nil {
+		if header := bc.GetHeaderByHash(head); header != nil {
 			currentHeader = header
 		}
 	}
@@ -646,7 +646,7 @@ func (bc *BlockChain) Rollback(chain []common.Hash) {
 
 		currentHeader := bc.hc.CurrentHeader()
 		if currentHeader.Hash() == hash {
-			bc.hc.SetCurrentHeader(bc.ballstesteader(currentHeader.ParentHash, currentHeader.Number.Uint64()-1))
+			bc.hc.SetCurrentHeader(bc.GetHeader(currentHeader.ParentHash, currentHeader.Number.Uint64()-1))
 		}
 		if bc.currentFastBlock.Hash() == hash {
 			bc.currentFastBlock = bc.GetBlock(bc.currentFastBlock.ParentHash(), bc.currentFastBlock.NumberU64()-1)
@@ -1325,16 +1325,16 @@ func (bc *BlockChain) GetTdByHash(hash common.Hash) *big.Int {
 	return bc.hc.GetTdByHash(hash)
 }
 
-// ballstesteader retrieves a block header from the database by hash and number,
+// GetHeader retrieves a block header from the database by hash and number,
 // caching it if found.
-func (bc *BlockChain) ballstesteader(hash common.Hash, number uint64) *types.Header {
-	return bc.hc.ballstesteader(hash, number)
+func (bc *BlockChain) GetHeader(hash common.Hash, number uint64) *types.Header {
+	return bc.hc.GetHeader(hash, number)
 }
 
-// ballstesteaderByHash retrieves a block header from the database by hash, caching it if
+// GetHeaderByHash retrieves a block header from the database by hash, caching it if
 // found.
-func (bc *BlockChain) ballstesteaderByHash(hash common.Hash) *types.Header {
-	return bc.hc.ballstesteaderByHash(hash)
+func (bc *BlockChain) GetHeaderByHash(hash common.Hash) *types.Header {
+	return bc.hc.GetHeaderByHash(hash)
 }
 
 // HasHeader checks if a block header is present in the database or not, caching
@@ -1349,10 +1349,10 @@ func (bc *BlockChain) GetBlockHashesFromHash(hash common.Hash, max uint64) []com
 	return bc.hc.GetBlockHashesFromHash(hash, max)
 }
 
-// ballstesteaderByNumber retrieves a block header from the database by number,
+// GetHeaderByNumber retrieves a block header from the database by number,
 // caching it (associated with its hash) if found.
-func (bc *BlockChain) ballstesteaderByNumber(number uint64) *types.Header {
-	return bc.hc.ballstesteaderByNumber(number)
+func (bc *BlockChain) GetHeaderByNumber(number uint64) *types.Header {
+	return bc.hc.GetHeaderByNumber(number)
 }
 
 // Config retrieves the blockchain's chain configuration.

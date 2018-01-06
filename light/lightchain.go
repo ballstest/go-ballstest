@@ -104,7 +104,7 @@ func NewLightChain(odr OdrBackend, config *params.ChainConfig, engine consensus.
 	}
 	// Check the current state of the block hashes and make sure that we do not have any of the bad blocks in our chain
 	for hash := range core.BadHashes {
-		if header := bc.ballstesteaderByHash(hash); header != nil {
+		if header := bc.GetHeaderByHash(hash); header != nil {
 			log.Error("Found bad hash, rewinding chain", "number", header.Number, "hash", header.ParentHash)
 			bc.SetHead(header.Number.Uint64() - 1)
 			log.Error("Chain rewind was successful, resuming normal operation")
@@ -145,7 +145,7 @@ func (self *LightChain) loadLastState() error {
 		// Corrupt or empty database, init from scratch
 		self.Reset()
 	} else {
-		if header := self.ballstesteaderByHash(head); header != nil {
+		if header := self.GetHeaderByHash(head); header != nil {
 			self.hc.SetCurrentHeader(header)
 		}
 	}
@@ -326,7 +326,7 @@ func (self *LightChain) Rollback(chain []common.Hash) {
 		hash := chain[i]
 
 		if head := self.hc.CurrentHeader(); head.Hash() == hash {
-			self.hc.SetCurrentHeader(self.ballstesteader(head.ParentHash, head.Number.Uint64()-1))
+			self.hc.SetCurrentHeader(self.GetHeader(head.ParentHash, head.Number.Uint64()-1))
 		}
 	}
 }
@@ -418,16 +418,16 @@ func (self *LightChain) GetTdByHash(hash common.Hash) *big.Int {
 	return self.hc.GetTdByHash(hash)
 }
 
-// ballstesteader retrieves a block header from the database by hash and number,
+// GetHeader retrieves a block header from the database by hash and number,
 // caching it if found.
-func (self *LightChain) ballstesteader(hash common.Hash, number uint64) *types.Header {
-	return self.hc.ballstesteader(hash, number)
+func (self *LightChain) GetHeader(hash common.Hash, number uint64) *types.Header {
+	return self.hc.GetHeader(hash, number)
 }
 
-// ballstesteaderByHash retrieves a block header from the database by hash, caching it if
+// GetHeaderByHash retrieves a block header from the database by hash, caching it if
 // found.
-func (self *LightChain) ballstesteaderByHash(hash common.Hash) *types.Header {
-	return self.hc.ballstesteaderByHash(hash)
+func (self *LightChain) GetHeaderByHash(hash common.Hash) *types.Header {
+	return self.hc.GetHeaderByHash(hash)
 }
 
 // HasHeader checks if a block header is present in the database or not, caching
@@ -442,19 +442,19 @@ func (self *LightChain) GetBlockHashesFromHash(hash common.Hash, max uint64) []c
 	return self.hc.GetBlockHashesFromHash(hash, max)
 }
 
-// ballstesteaderByNumber retrieves a block header from the database by number,
+// GetHeaderByNumber retrieves a block header from the database by number,
 // caching it (associated with its hash) if found.
-func (self *LightChain) ballstesteaderByNumber(number uint64) *types.Header {
-	return self.hc.ballstesteaderByNumber(number)
+func (self *LightChain) GetHeaderByNumber(number uint64) *types.Header {
+	return self.hc.GetHeaderByNumber(number)
 }
 
-// ballstesteaderByNumberOdr retrieves a block header from the database or network
+// GetHeaderByNumberOdr retrieves a block header from the database or network
 // by number, caching it (associated with its hash) if found.
-func (self *LightChain) ballstesteaderByNumberOdr(ctx context.Context, number uint64) (*types.Header, error) {
-	if header := self.hc.ballstesteaderByNumber(number); header != nil {
+func (self *LightChain) GetHeaderByNumberOdr(ctx context.Context, number uint64) (*types.Header, error) {
+	if header := self.hc.GetHeaderByNumber(number); header != nil {
 		return header, nil
 	}
-	return ballstesteaderByNumber(ctx, self.odr, number)
+	return GetHeaderByNumber(ctx, self.odr, number)
 }
 
 // Config retrieves the header chain's chain configuration.
@@ -468,7 +468,7 @@ func (self *LightChain) SyncCht(ctx context.Context) bool {
 	chtCount, _, _ := self.odr.ChtIndexer().Sections()
 	if headNum+1 < chtCount*ChtFrequency {
 		num := chtCount*ChtFrequency - 1
-		header, err := ballstesteaderByNumber(ctx, self.odr, num)
+		header, err := GetHeaderByNumber(ctx, self.odr, num)
 		if header != nil && err == nil {
 			self.mu.Lock()
 			if self.hc.CurrentHeader().Number.Uint64() < header.Number.Uint64() {

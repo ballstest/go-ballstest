@@ -158,8 +158,8 @@ type LightChain interface {
 	// HasHeader verifies a header's presence in the local chain.
 	HasHeader(h common.Hash, number uint64) bool
 
-	// ballstesteaderByHash retrieves a header from the local chain.
-	ballstesteaderByHash(common.Hash) *types.Header
+	// GetHeaderByHash retrieves a header from the local chain.
+	GetHeaderByHash(common.Hash) *types.Header
 
 	// CurrentHeader retrieves the head header from the local chain.
 	CurrentHeader() *types.Header
@@ -735,7 +735,7 @@ func (d *Downloader) findAncestor(p *peerConnection, height uint64) (uint64, err
 					end = check
 					break
 				}
-				header := d.lightchain.ballstesteaderByHash(headers[0].Hash()) // Independent of sync mode, header surely exists
+				header := d.lightchain.GetHeaderByHash(headers[0].Hash()) // Independent of sync mode, header surely exists
 				if header.Number.Uint64() != check {
 					p.log.Debug("Received non requested header", "number", header.Number, "hash", header.Hash(), "request", check)
 					return 0, errBadPeer
@@ -781,7 +781,7 @@ func (d *Downloader) fetchHeaders(p *peerConnection, from uint64) error {
 	defer timeout.Stop()
 
 	var ttl time.Duration
-	ballstesteaders := func(from uint64) {
+	GetHeaders := func(from uint64) {
 		request = time.Now()
 
 		ttl = d.requestTTL()
@@ -796,7 +796,7 @@ func (d *Downloader) fetchHeaders(p *peerConnection, from uint64) error {
 		}
 	}
 	// Start pulling the header chain skeleton until all is done
-	ballstesteaders(from)
+	GetHeaders(from)
 
 	for {
 		select {
@@ -815,7 +815,7 @@ func (d *Downloader) fetchHeaders(p *peerConnection, from uint64) error {
 			// If the skeleton's finished, pull any remaining head headers directly from the origin
 			if packet.Items() == 0 && skeleton {
 				skeleton = false
-				ballstesteaders(from)
+				GetHeaders(from)
 				continue
 			}
 			// If no more headers are inbound, notify the content fetchers and return
@@ -850,7 +850,7 @@ func (d *Downloader) fetchHeaders(p *peerConnection, from uint64) error {
 				}
 				from += uint64(len(headers))
 			}
-			ballstesteaders(from)
+			GetHeaders(from)
 
 		case <-timeout.C:
 			// Header retrieval timed out, consider the peer bad and drop

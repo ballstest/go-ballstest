@@ -127,10 +127,10 @@ func odrAccounts(ctx context.Context, db ethdb.Database, bc *core.BlockChain, lc
 
 	var st *state.StateDB
 	if bc == nil {
-		header := lc.ballstesteaderByHash(bhash)
+		header := lc.GetHeaderByHash(bhash)
 		st = NewState(ctx, header, lc.Odr())
 	} else {
-		header := bc.ballstesteaderByHash(bhash)
+		header := bc.GetHeaderByHash(bhash)
 		st, _ = state.New(header.Root, state.NewDatabase(db))
 	}
 
@@ -166,11 +166,11 @@ func odrContractCall(ctx context.Context, db ethdb.Database, bc *core.BlockChain
 		)
 		if bc == nil {
 			chain = lc
-			header = lc.ballstesteaderByHash(bhash)
+			header = lc.GetHeaderByHash(bhash)
 			st = NewState(ctx, header, lc.Odr())
 		} else {
 			chain = bc
-			header = bc.ballstesteaderByHash(bhash)
+			header = bc.GetHeaderByHash(bhash)
 			st, _ = state.New(header.Root, state.NewDatabase(db))
 		}
 

@@ -58,7 +58,7 @@ func TestTrieEntryAccessLes1(t *testing.T) { testAccess(t, 1, tfTrieEntryAccess)
 func TestTrieEntryAccessLes2(t *testing.T) { testAccess(t, 2, tfTrieEntryAccess) }
 
 func tfTrieEntryAccess(db ethdb.Database, bhash common.Hash, number uint64) light.OdrRequest {
-	return &light.TrieRequest{Id: light.StateTrieID(core.ballstesteader(db, bhash, core.GetBlockNumber(db, bhash))), Key: testBankSecureTrieKey}
+	return &light.TrieRequest{Id: light.StateTrieID(core.GetHeader(db, bhash, core.GetBlockNumber(db, bhash))), Key: testBankSecureTrieKey}
 }
 
 func TestCodeAccessLes1(t *testing.T) { testAccess(t, 1, tfCodeAccess) }
@@ -66,7 +66,7 @@ func TestCodeAccessLes1(t *testing.T) { testAccess(t, 1, tfCodeAccess) }
 func TestCodeAccessLes2(t *testing.T) { testAccess(t, 2, tfCodeAccess) }
 
 func tfCodeAccess(db ethdb.Database, bhash common.Hash, number uint64) light.OdrRequest {
-	header := core.ballstesteader(db, bhash, core.GetBlockNumber(db, bhash))
+	header := core.GetHeader(db, bhash, core.GetBlockNumber(db, bhash))
 	if header.Number.Uint64() < testContractDeployed {
 		return nil
 	}

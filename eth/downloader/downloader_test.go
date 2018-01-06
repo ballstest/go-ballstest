@@ -219,7 +219,7 @@ func (dl *downloadTester) sync(id string, td *big.Int, mode SyncMode) error {
 
 // HasHeader checks if a header is present in the testers canonical chain.
 func (dl *downloadTester) HasHeader(hash common.Hash, number uint64) bool {
-	return dl.ballstesteaderByHash(hash) != nil
+	return dl.GetHeaderByHash(hash) != nil
 }
 
 // HasBlockAndState checks if a block and associated state is present in the testers canonical chain.
@@ -232,8 +232,8 @@ func (dl *downloadTester) HasBlockAndState(hash common.Hash) bool {
 	return err == nil
 }
 
-// ballstesteader retrieves a header from the testers canonical chain.
-func (dl *downloadTester) ballstesteaderByHash(hash common.Hash) *types.Header {
+// GetHeader retrieves a header from the testers canonical chain.
+func (dl *downloadTester) GetHeaderByHash(hash common.Hash) *types.Header {
 	dl.lock.RLock()
 	defer dl.lock.RUnlock()
 

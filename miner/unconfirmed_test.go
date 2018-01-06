@@ -27,7 +27,7 @@ import (
 // returns nil for any requested headers.
 type noopHeaderRetriever struct{}
 
-func (r *noopHeaderRetriever) ballstesteaderByNumber(number uint64) *types.Header {
+func (r *noopHeaderRetriever) GetHeaderByNumber(number uint64) *types.Header {
 	return nil
 }
 

@@ -90,14 +90,14 @@ func NewHeaderChain(chainDb ethdb.Database, config *params.ChainConfig, engine c
 		engine:        engine,
 	}
 
-	hc.genesisHeader = hc.ballstesteaderByNumber(0)
+	hc.genesisHeader = hc.GetHeaderByNumber(0)
 	if hc.genesisHeader == nil {
 		return nil, ErrNoGenesis
 	}
 
 	hc.currentHeader = hc.genesisHeader
 	if head := ballstesteadBlockHash(chainDb); head != (common.Hash{}) {
-		if chead := hc.ballstesteaderByHash(head); chead != nil {
+		if chead := hc.GetHeaderByHash(head); chead != nil {
 			hc.currentHeader = chead
 		}
 	}
@@ -165,14 +165,14 @@ func (hc *HeaderChain) WriteHeader(header *types.Header) (status WriteStatus, er
 		var (
 			headHash   = header.ParentHash
 			headNumber = header.Number.Uint64() - 1
-			headHeader = hc.ballstesteader(headHash, headNumber)
+			headHeader = hc.GetHeader(headHash, headNumber)
 		)
 		for GetCanonicalHash(hc.chainDb, headNumber) != headHash {
 			WriteCanonicalHash(hc.chainDb, headHash, headNumber)
 
 			headHash = headHeader.ParentHash
 			headNumber = headHeader.Number.Uint64() - 1
-			headHeader = hc.ballstesteader(headHash, headNumber)
+			headHeader = hc.GetHeader(headHash, headNumber)
 		}
 		// Extend the canonical chain with the new header
 		if err := WriteCanonicalHash(hc.chainDb, hash, number); err != nil {
@@ -288,7 +288,7 @@ func (hc *HeaderChain) InsertHeaderChain(chain []*types.Header, writeHeader WhCa
 // hash, fetching towards the genesis block.
 func (hc *HeaderChain) GetBlockHashesFromHash(hash common.Hash, max uint64) []common.Hash {
 	// Get the origin header from which to fetch
-	header := hc.ballstesteaderByHash(hash)
+	header := hc.GetHeaderByHash(hash)
 	if header == nil {
 		return nil
 	}
@@ -296,7 +296,7 @@ func (hc *HeaderChain) GetBlockHashesFromHash(hash common.Hash, max uint64) []co
 	chain := make([]common.Hash, 0, max)
 	for i := uint64(0); i < max; i++ {
 		next := header.ParentHash
-		if header = hc.ballstesteader(next, header.Number.Uint64()-1); header == nil {
+		if header = hc.GetHeader(next, header.Number.Uint64()-1); header == nil {
 			break
 		}
 		chain = append(chain, next)
@@ -339,14 +339,14 @@ func (hc *HeaderChain) WriteTd(hash common.Hash, number uint64, td *big.Int) err
 	return nil
 }
 
-// ballstesteader retrieves a block header from the database by hash and number,
+// GetHeader retrieves a block header from the database by hash and number,
 // caching it if found.
-func (hc *HeaderChain) ballstesteader(hash common.Hash, number uint64) *types.Header {
+func (hc *HeaderChain) GetHeader(hash common.Hash, number uint64) *types.Header {
 	// Short circuit if the header's already in the cache, retrieve otherwise
 	if header, ok := hc.headerCache.Get(hash); ok {
 		return header.(*types.Header)
 	}
-	header := ballstesteader(hc.chainDb, hash, number)
+	header := GetHeader(hc.chainDb, hash, number)
 	if header == nil {
 		return nil
 	}
@@ -355,10 +355,10 @@ func (hc *HeaderChain) ballstesteader(hash common.Hash, number uint64) *types.He
 	return header
 }
 
-// ballstesteaderByHash retrieves a block header from the database by hash, caching it if
+// GetHeaderByHash retrieves a block header from the database by hash, caching it if
 // found.
-func (hc *HeaderChain) ballstesteaderByHash(hash common.Hash) *types.Header {
-	return hc.ballstesteader(hash, hc.GetBlockNumber(hash))
+func (hc *HeaderChain) GetHeaderByHash(hash common.Hash) *types.Header {
+	return hc.GetHeader(hash, hc.GetBlockNumber(hash))
 }
 
 // HasHeader checks if a block header is present in the database or not.
@@ -370,14 +370,14 @@ func (hc *HeaderChain) HasHeader(hash common.Hash, number uint64) bool {
 	return ok
 }
 
-// ballstesteaderByNumber retrieves a block header from the database by number,
+// GetHeaderByNumber retrieves a block header from the database by number,
 // caching it (associated with its hash) if found.
-func (hc *HeaderChain) ballstesteaderByNumber(number uint64) *types.Header {
+func (hc *HeaderChain) GetHeaderByNumber(number uint64) *types.Header {
 	hash := GetCanonicalHash(hc.chainDb, number)
 	if hash == (common.Hash{}) {
 		return nil
 	}
-	return hc.ballstesteader(hash, number)
+	return hc.GetHeader(hash, number)
 }
 
 // CurrentHeader retrieves the current head header of the canonical chain. The
@@ -415,7 +415,7 @@ func (hc *HeaderChain) SetHead(head uint64, delFn DeleteCallback) {
 		}
 		DeleteHeader(hc.chainDb, hash, num)
 		DeleteTd(hc.chainDb, hash, num)
-		hc.currentHeader = hc.ballstesteader(hc.currentHeader.ParentHash, hc.currentHeader.Number.Uint64()-1)
+		hc.currentHeader = hc.GetHeader(hc.currentHeader.ParentHash, hc.currentHeader.Number.Uint64()-1)
 	}
 	// Roll back the canonical chain numbering
 	for i := height; i > head; i-- {

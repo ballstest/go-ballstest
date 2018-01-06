@@ -53,15 +53,15 @@ func (ec *ballstestClient) GetBlockByNumber(ctx *Context, number int64) (block *
 	return &Block{rawBlock}, err
 }
 
-// ballstesteaderByHash returns the block header with the given hash.
-func (ec *ballstestClient) ballstesteaderByHash(ctx *Context, hash *Hash) (header *Header, _ error) {
+// GetHeaderByHash returns the block header with the given hash.
+func (ec *ballstestClient) GetHeaderByHash(ctx *Context, hash *Hash) (header *Header, _ error) {
 	rawHeader, err := ec.client.HeaderByHash(ctx.context, hash.hash)
 	return &Header{rawHeader}, err
 }
 
-// ballstesteaderByNumber returns a block header from the current canonical chain. If number is <0,
+// GetHeaderByNumber returns a block header from the current canonical chain. If number is <0,
 // the latest known header is returned.
-func (ec *ballstestClient) ballstesteaderByNumber(ctx *Context, number int64) (header *Header, _ error) {
+func (ec *ballstestClient) GetHeaderByNumber(ctx *Context, number int64) (header *Header, _ error) {
 	if number < 0 {
 		rawHeader, err := ec.client.HeaderByNumber(ctx.context, nil)
 		return &Header{rawHeader}, err

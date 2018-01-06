@@ -146,17 +146,17 @@ func ballstesteadFastBlockHash(db DatabaseReader) common.Hash {
 	return common.BytesToHash(data)
 }
 
-// ballstesteaderRLP retrieves a block header in its raw RLP database encoding, or nil
+// GetHeaderRLP retrieves a block header in its raw RLP database encoding, or nil
 // if the header's not found.
-func ballstesteaderRLP(db DatabaseReader, hash common.Hash, number uint64) rlp.RawValue {
+func GetHeaderRLP(db DatabaseReader, hash common.Hash, number uint64) rlp.RawValue {
 	data, _ := db.Get(headerKey(hash, number))
 	return data
 }
 
-// ballstesteader retrieves the block header corresponding to the hash, nil if none
+// GetHeader retrieves the block header corresponding to the hash, nil if none
 // found.
-func ballstesteader(db DatabaseReader, hash common.Hash, number uint64) *types.Header {
-	data := ballstesteaderRLP(db, hash, number)
+func GetHeader(db DatabaseReader, hash common.Hash, number uint64) *types.Header {
+	data := GetHeaderRLP(db, hash, number)
 	if len(data) == 0 {
 		return nil
 	}
@@ -220,7 +220,7 @@ func GetTd(db DatabaseReader, hash common.Hash, number uint64) *big.Int {
 // canonical hash can be stored in the database but the body data not (yet).
 func GetBlock(db DatabaseReader, hash common.Hash, number uint64) *types.Block {
 	// Retrieve the block header and body contents
-	header := ballstesteader(db, hash, number)
+	header := GetHeader(db, hash, number)
 	if header == nil {
 		return nil
 	}
@@ -607,23 +607,23 @@ func GetChainConfig(db DatabaseReader, hash common.Hash) (*params.ChainConfig, e
 // FindCommonAncestor returns the last common ancestor of two block headers
 func FindCommonAncestor(db DatabaseReader, a, b *types.Header) *types.Header {
 	for bn := b.Number.Uint64(); a.Number.Uint64() > bn; {
-		a = ballstesteader(db, a.ParentHash, a.Number.Uint64()-1)
+		a = GetHeader(db, a.ParentHash, a.Number.Uint64()-1)
 		if a == nil {
 			return nil
 		}
 	}
 	for an := a.Number.Uint64(); an < b.Number.Uint64(); {
-		b = ballstesteader(db, b.ParentHash, b.Number.Uint64()-1)
+		b = GetHeader(db, b.ParentHash, b.Number.Uint64()-1)
 		if b == nil {
 			return nil
 		}
 	}
 	for a.Hash() != b.Hash() {
-		a = ballstesteader(db, a.ParentHash, a.Number.Uint64()-1)
+		a = GetHeader(db, a.ParentHash, a.Number.Uint64()-1)
 		if a == nil {
 			return nil
 		}
-		b = ballstesteader(db, b.ParentHash, b.Number.Uint64()-1)
+		b = GetHeader(db, b.ParentHash, b.Number.Uint64()-1)
 		if b == nil {
 			return nil
 		}

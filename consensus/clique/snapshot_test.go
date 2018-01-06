@@ -76,12 +76,12 @@ type testerChainReader struct {
 
 func (r *testerChainReader) Config() *params.ChainConfig                 { return params.AllCliqueProtocolChanges }
 func (r *testerChainReader) CurrentHeader() *types.Header                { panic("not supported") }
-func (r *testerChainReader) ballstesteader(common.Hash, uint64) *types.Header { panic("not supported") }
+func (r *testerChainReader) GetHeader(common.Hash, uint64) *types.Header { panic("not supported") }
 func (r *testerChainReader) GetBlock(common.Hash, uint64) *types.Block   { panic("not supported") }
-func (r *testerChainReader) ballstesteaderByHash(common.Hash) *types.Header   { panic("not supported") }
-func (r *testerChainReader) ballstesteaderByNumber(number uint64) *types.Header {
+func (r *testerChainReader) GetHeaderByHash(common.Hash) *types.Header   { panic("not supported") }
+func (r *testerChainReader) GetHeaderByNumber(number uint64) *types.Header {
 	if number == 0 {
-		return core.ballstesteader(r.db, core.GetCanonicalHash(r.db, 0), 0)
+		return core.GetHeader(r.db, core.GetCanonicalHash(r.db, 0), 0)
 	}
 	panic("not supported")
 }
