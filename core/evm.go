@@ -1,18 +1,18 @@
-// Copyright 2016 The go-ballstest Authors
-// This file is part of the go-ballstest library.
+// Copyright 2016 The go-ethereum Authors
+// This file is part of the go-ethereum library.
 //
-// The go-ballstest library is free software: you can redistribute it and/or modify
+// The go-ethereum library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// The go-ballstest library is distributed in the hope that it will be useful,
+// The go-ethereum library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the go-ballstest library. If not, see <http://www.gnu.org/licenses/>.
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
 package core
 
@@ -47,7 +47,7 @@ func NewEVMContext(msg Message, header *types.Header, chain ChainContext, author
 	return vm.Context{
 		CanTransfer: CanTransfer,
 		Transfer:    Transfer,
-		ballstestash:     ballstestashFn(header, chain),
+		GetHash:     GetHashFn(header, chain),
 		Origin:      msg.From(),
 		Coinbase:    beneficiary,
 		BlockNumber: new(big.Int).Set(header.Number),
@@ -58,8 +58,8 @@ func NewEVMContext(msg Message, header *types.Header, chain ChainContext, author
 	}
 }
 
-// ballstestashFn returns a ballstestashFunc which retrieves header hashes by number
-func ballstestashFn(ref *types.Header, chain ChainContext) func(n uint64) common.Hash {
+// GetHashFn returns a GetHashFunc which retrieves header hashes by number
+func GetHashFn(ref *types.Header, chain ChainContext) func(n uint64) common.Hash {
 	return func(n uint64) common.Hash {
 		for header := chain.GetHeader(ref.ParentHash, ref.Number.Uint64()-1); header != nil; header = chain.GetHeader(header.ParentHash, header.Number.Uint64()-1) {
 			if header.Number.Uint64() == n {

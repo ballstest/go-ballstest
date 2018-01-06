@@ -42,9 +42,9 @@ It has these top-level messages:
 	GetPublicKey
 	PublicKey
 	GetAddress
-	ballstestGetAddress
+	EthereumGetAddress
 	Address
-	ballstestAddress
+	EthereumAddress
 	WipeDevice
 	LoadDevice
 	ResetDevice
@@ -69,9 +69,9 @@ It has these top-level messages:
 	SimpleSignTx
 	TxRequest
 	TxAck
-	ballstestSignTx
-	ballstestTxRequest
-	ballstestTxAck
+	EthereumSignTx
+	EthereumTxRequest
+	EthereumTxAck
 	ballstestSignMessage
 	ballstestVerifyMessage
 	ballstestMessageSignature

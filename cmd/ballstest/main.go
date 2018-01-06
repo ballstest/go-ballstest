@@ -1,4 +1,4 @@
-// Copyright 2014 The go-ballstest Authors
+// Copyright 2014 The go-ethereum Authors
 // This file is part of go-ballstest.
 //
 // go-ballstest is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ func init() {
 	// Initialize the CLI app and start ballstest
 	app.Action = ballstest
 	app.HideVersion = true // we have a command to print the version
-	app.Copyright = "Copyright 2013-2017 The go-ballstest Authors"
+	app.Copyright = "Copyright 2013-2017 The go-ethereum Authors"
 	app.Commands = []cli.Command{
 		// See chaincmd.go:
 		initCommand,

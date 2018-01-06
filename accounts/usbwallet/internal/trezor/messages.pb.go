@@ -70,11 +70,11 @@ const (
 	MessageType_MessageType_SignIdentity             MessageType = 53
 	MessageType_MessageType_SignedIdentity           MessageType = 54
 	MessageType_MessageType_GetFeatures              MessageType = 55
-	MessageType_MessageType_ballstestGetAddress       MessageType = 56
-	MessageType_MessageType_ballstestAddress          MessageType = 57
-	MessageType_MessageType_ballstestSignTx           MessageType = 58
-	MessageType_MessageType_ballstestTxRequest        MessageType = 59
-	MessageType_MessageType_ballstestTxAck            MessageType = 60
+	MessageType_MessageType_EthereumGetAddress       MessageType = 56
+	MessageType_MessageType_EthereumAddress          MessageType = 57
+	MessageType_MessageType_EthereumSignTx           MessageType = 58
+	MessageType_MessageType_EthereumTxRequest        MessageType = 59
+	MessageType_MessageType_EthereumTxAck            MessageType = 60
 	MessageType_MessageType_GetECDHSessionKey        MessageType = 61
 	MessageType_MessageType_ECDHSessionKey           MessageType = 62
 	MessageType_MessageType_SetU2FCounter            MessageType = 63
@@ -146,11 +146,11 @@ var MessageType_name = map[int32]string{
 	53:  "MessageType_SignIdentity",
 	54:  "MessageType_SignedIdentity",
 	55:  "MessageType_GetFeatures",
-	56:  "MessageType_ballstestGetAddress",
-	57:  "MessageType_ballstestAddress",
-	58:  "MessageType_ballstestSignTx",
-	59:  "MessageType_ballstestTxRequest",
-	60:  "MessageType_ballstestTxAck",
+	56:  "MessageType_EthereumGetAddress",
+	57:  "MessageType_EthereumAddress",
+	58:  "MessageType_EthereumSignTx",
+	59:  "MessageType_EthereumTxRequest",
+	60:  "MessageType_EthereumTxAck",
 	61:  "MessageType_GetECDHSessionKey",
 	62:  "MessageType_ECDHSessionKey",
 	63:  "MessageType_SetU2FCounter",
@@ -221,11 +221,11 @@ var MessageType_value = map[string]int32{
 	"MessageType_SignIdentity":             53,
 	"MessageType_SignedIdentity":           54,
 	"MessageType_GetFeatures":              55,
-	"MessageType_ballstestGetAddress":       56,
-	"MessageType_ballstestAddress":          57,
-	"MessageType_ballstestSignTx":           58,
-	"MessageType_ballstestTxRequest":        59,
-	"MessageType_ballstestTxAck":            60,
+	"MessageType_EthereumGetAddress":       56,
+	"MessageType_EthereumAddress":          57,
+	"MessageType_EthereumSignTx":           58,
+	"MessageType_EthereumTxRequest":        59,
+	"MessageType_EthereumTxAck":            60,
 	"MessageType_GetECDHSessionKey":        61,
 	"MessageType_ECDHSessionKey":           62,
 	"MessageType_SetU2FCounter":            63,
@@ -956,27 +956,27 @@ func (m *GetAddress) GetScriptType() InputScriptType {
 // *
 // Request: Ask device for ballstest address corresponding to address_n path
 // @next PassphraseRequest
-// @next ballstestAddress
+// @next EthereumAddress
 // @next Failure
-type ballstestGetAddress struct {
+type EthereumGetAddress struct {
 	AddressN         []uint32 `protobuf:"varint,1,rep,name=address_n,json=addressN" json:"address_n,omitempty"`
 	ShowDisplay      *bool    `protobuf:"varint,2,opt,name=show_display,json=showDisplay" json:"show_display,omitempty"`
 	XXX_unrecognized []byte   `json:"-"`
 }
 
-func (m *ballstestGetAddress) Reset()                    { *m = ballstestGetAddress{} }
-func (m *ballstestGetAddress) String() string            { return proto.CompactTextString(m) }
-func (*ballstestGetAddress) ProtoMessage()               {}
-func (*ballstestGetAddress) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{22} }
+func (m *EthereumGetAddress) Reset()                    { *m = EthereumGetAddress{} }
+func (m *EthereumGetAddress) String() string            { return proto.CompactTextString(m) }
+func (*EthereumGetAddress) ProtoMessage()               {}
+func (*EthereumGetAddress) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{22} }
 
-func (m *ballstestGetAddress) GetAddressN() []uint32 {
+func (m *EthereumGetAddress) GetAddressN() []uint32 {
 	if m != nil {
 		return m.AddressN
 	}
 	return nil
 }
 
-func (m *ballstestGetAddress) GetShowDisplay() bool {
+func (m *EthereumGetAddress) GetShowDisplay() bool {
 	if m != nil && m.ShowDisplay != nil {
 		return *m.ShowDisplay
 	}
@@ -1005,18 +1005,18 @@ func (m *Address) GetAddress() string {
 
 // *
 // Response: Contains an ballstest address derived from device private seed
-// @prev ballstestGetAddress
-type ballstestAddress struct {
+// @prev EthereumGetAddress
+type EthereumAddress struct {
 	Address          []byte `protobuf:"bytes,1,req,name=address" json:"address,omitempty"`
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *ballstestAddress) Reset()                    { *m = ballstestAddress{} }
-func (m *ballstestAddress) String() string            { return proto.CompactTextString(m) }
-func (*ballstestAddress) ProtoMessage()               {}
-func (*ballstestAddress) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{24} }
+func (m *EthereumAddress) Reset()                    { *m = EthereumAddress{} }
+func (m *EthereumAddress) String() string            { return proto.CompactTextString(m) }
+func (*EthereumAddress) ProtoMessage()               {}
+func (*EthereumAddress) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{24} }
 
-func (m *ballstestAddress) GetAddress() []byte {
+func (m *EthereumAddress) GetAddress() []byte {
 	if m != nil {
 		return m.Address
 	}
@@ -2006,9 +2006,9 @@ func (m *TxAck) GetTx() *TransactionType {
 // Note: the first at most 1024 bytes of data MUST be transmitted as part of this message.
 // @next PassphraseRequest
 // @next PinMatrixRequest
-// @next ballstestTxRequest
+// @next EthereumTxRequest
 // @next Failure
-type ballstestSignTx struct {
+type EthereumSignTx struct {
 	AddressN         []uint32 `protobuf:"varint,1,rep,name=address_n,json=addressN" json:"address_n,omitempty"`
 	Nonce            []byte   `protobuf:"bytes,2,opt,name=nonce" json:"nonce,omitempty"`
 	GasPrice         []byte   `protobuf:"bytes,3,opt,name=gas_price,json=gasPrice" json:"gas_price,omitempty"`
@@ -2021,68 +2021,68 @@ type ballstestSignTx struct {
 	XXX_unrecognized []byte   `json:"-"`
 }
 
-func (m *ballstestSignTx) Reset()                    { *m = ballstestSignTx{} }
-func (m *ballstestSignTx) String() string            { return proto.CompactTextString(m) }
-func (*ballstestSignTx) ProtoMessage()               {}
-func (*ballstestSignTx) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{49} }
+func (m *EthereumSignTx) Reset()                    { *m = EthereumSignTx{} }
+func (m *EthereumSignTx) String() string            { return proto.CompactTextString(m) }
+func (*EthereumSignTx) ProtoMessage()               {}
+func (*EthereumSignTx) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{49} }
 
-func (m *ballstestSignTx) GetAddressN() []uint32 {
+func (m *EthereumSignTx) GetAddressN() []uint32 {
 	if m != nil {
 		return m.AddressN
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetNonce() []byte {
+func (m *EthereumSignTx) GetNonce() []byte {
 	if m != nil {
 		return m.Nonce
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetGasPrice() []byte {
+func (m *EthereumSignTx) GetGasPrice() []byte {
 	if m != nil {
 		return m.GasPrice
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetGasLimit() []byte {
+func (m *EthereumSignTx) GetGasLimit() []byte {
 	if m != nil {
 		return m.GasLimit
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetTo() []byte {
+func (m *EthereumSignTx) GetTo() []byte {
 	if m != nil {
 		return m.To
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetValue() []byte {
+func (m *EthereumSignTx) GetValue() []byte {
 	if m != nil {
 		return m.Value
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetDataInitialChunk() []byte {
+func (m *EthereumSignTx) GetDataInitialChunk() []byte {
 	if m != nil {
 		return m.DataInitialChunk
 	}
 	return nil
 }
 
-func (m *ballstestSignTx) GetDataLength() uint32 {
+func (m *EthereumSignTx) GetDataLength() uint32 {
 	if m != nil && m.DataLength != nil {
 		return *m.DataLength
 	}
 	return 0
 }
 
-func (m *ballstestSignTx) GetChainId() uint32 {
+func (m *EthereumSignTx) GetChainId() uint32 {
 	if m != nil && m.ChainId != nil {
 		return *m.ChainId
 	}
@@ -2093,9 +2093,9 @@ func (m *ballstestSignTx) GetChainId() uint32 {
 // Response: Device asks for more data from transaction payload, or returns the signature.
 // If data_length is set, device awaits that many more bytes of payload.
 // Otherwise, the signature_* fields contain the computed transaction signature. All three fields will be present.
-// @prev ballstestSignTx
-// @next ballstestTxAck
-type ballstestTxRequest struct {
+// @prev EthereumSignTx
+// @next EthereumTxAck
+type EthereumTxRequest struct {
 	DataLength       *uint32 `protobuf:"varint,1,opt,name=data_length,json=dataLength" json:"data_length,omitempty"`
 	SignatureV       *uint32 `protobuf:"varint,2,opt,name=signature_v,json=signatureV" json:"signature_v,omitempty"`
 	SignatureR       []byte  `protobuf:"bytes,3,opt,name=signature_r,json=signatureR" json:"signature_r,omitempty"`
@@ -2103,33 +2103,33 @@ type ballstestTxRequest struct {
 	XXX_unrecognized []byte  `json:"-"`
 }
 
-func (m *ballstestTxRequest) Reset()                    { *m = ballstestTxRequest{} }
-func (m *ballstestTxRequest) String() string            { return proto.CompactTextString(m) }
-func (*ballstestTxRequest) ProtoMessage()               {}
-func (*ballstestTxRequest) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{50} }
+func (m *EthereumTxRequest) Reset()                    { *m = EthereumTxRequest{} }
+func (m *EthereumTxRequest) String() string            { return proto.CompactTextString(m) }
+func (*EthereumTxRequest) ProtoMessage()               {}
+func (*EthereumTxRequest) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{50} }
 
-func (m *ballstestTxRequest) GetDataLength() uint32 {
+func (m *EthereumTxRequest) GetDataLength() uint32 {
 	if m != nil && m.DataLength != nil {
 		return *m.DataLength
 	}
 	return 0
 }
 
-func (m *ballstestTxRequest) GetSignatureV() uint32 {
+func (m *EthereumTxRequest) GetSignatureV() uint32 {
 	if m != nil && m.SignatureV != nil {
 		return *m.SignatureV
 	}
 	return 0
 }
 
-func (m *ballstestTxRequest) GetSignatureR() []byte {
+func (m *EthereumTxRequest) GetSignatureR() []byte {
 	if m != nil {
 		return m.SignatureR
 	}
 	return nil
 }
 
-func (m *ballstestTxRequest) GetSignatureS() []byte {
+func (m *EthereumTxRequest) GetSignatureS() []byte {
 	if m != nil {
 		return m.SignatureS
 	}
@@ -2138,19 +2138,19 @@ func (m *ballstestTxRequest) GetSignatureS() []byte {
 
 // *
 // Request: Transaction payload data.
-// @prev ballstestTxRequest
-// @next ballstestTxRequest
-type ballstestTxAck struct {
+// @prev EthereumTxRequest
+// @next EthereumTxRequest
+type EthereumTxAck struct {
 	DataChunk        []byte `protobuf:"bytes,1,opt,name=data_chunk,json=dataChunk" json:"data_chunk,omitempty"`
 	XXX_unrecognized []byte `json:"-"`
 }
 
-func (m *ballstestTxAck) Reset()                    { *m = ballstestTxAck{} }
-func (m *ballstestTxAck) String() string            { return proto.CompactTextString(m) }
-func (*ballstestTxAck) ProtoMessage()               {}
-func (*ballstestTxAck) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{51} }
+func (m *EthereumTxAck) Reset()                    { *m = EthereumTxAck{} }
+func (m *EthereumTxAck) String() string            { return proto.CompactTextString(m) }
+func (*EthereumTxAck) ProtoMessage()               {}
+func (*EthereumTxAck) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{51} }
 
-func (m *ballstestTxAck) GetDataChunk() []byte {
+func (m *EthereumTxAck) GetDataChunk() []byte {
 	if m != nil {
 		return m.DataChunk
 	}
@@ -2481,7 +2481,7 @@ func (m *FirmwareUpload) GetPayload() []byte {
 	return nil
 }
 
-func (m *FirmwareUpload) ballstestash() []byte {
+func (m *FirmwareUpload) GetHash() []byte {
 	if m != nil {
 		return m.Hash
 	}
@@ -2806,9 +2806,9 @@ func init() {
 	proto.RegisterType((*GetPublicKey)(nil), "GetPublicKey")
 	proto.RegisterType((*PublicKey)(nil), "PublicKey")
 	proto.RegisterType((*GetAddress)(nil), "GetAddress")
-	proto.RegisterType((*ballstestGetAddress)(nil), "ballstestGetAddress")
+	proto.RegisterType((*EthereumGetAddress)(nil), "EthereumGetAddress")
 	proto.RegisterType((*Address)(nil), "Address")
-	proto.RegisterType((*ballstestAddress)(nil), "ballstestAddress")
+	proto.RegisterType((*EthereumAddress)(nil), "EthereumAddress")
 	proto.RegisterType((*WipeDevice)(nil), "WipeDevice")
 	proto.RegisterType((*LoadDevice)(nil), "LoadDevice")
 	proto.RegisterType((*ResetDevice)(nil), "ResetDevice")
@@ -2833,9 +2833,9 @@ func init() {
 	proto.RegisterType((*SimpleSignTx)(nil), "SimpleSignTx")
 	proto.RegisterType((*TxRequest)(nil), "TxRequest")
 	proto.RegisterType((*TxAck)(nil), "TxAck")
-	proto.RegisterType((*ballstestSignTx)(nil), "ballstestSignTx")
-	proto.RegisterType((*ballstestTxRequest)(nil), "ballstestTxRequest")
-	proto.RegisterType((*ballstestTxAck)(nil), "ballstestTxAck")
+	proto.RegisterType((*EthereumSignTx)(nil), "EthereumSignTx")
+	proto.RegisterType((*EthereumTxRequest)(nil), "EthereumTxRequest")
+	proto.RegisterType((*EthereumTxAck)(nil), "EthereumTxAck")
 	proto.RegisterType((*ballstestSignMessage)(nil), "ballstestSignMessage")
 	proto.RegisterType((*ballstestVerifyMessage)(nil), "ballstestVerifyMessage")
 	proto.RegisterType((*ballstestMessageSignature)(nil), "ballstestMessageSignature")

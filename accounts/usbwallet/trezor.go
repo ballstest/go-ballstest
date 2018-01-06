@@ -1,18 +1,18 @@
-// Copyright 2017 The go-ballstest Authors
-// This file is part of the go-ballstest library.
+// Copyright 2017 The go-ethereum Authors
+// This file is part of the go-ethereum library.
 //
-// The go-ballstest library is free software: you can redistribute it and/or modify
+// The go-ethereum library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// The go-ballstest library is distributed in the hope that it will be useful,
+// The go-ethereum library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the go-ballstest library. If not, see <http://www.gnu.org/licenses/>.
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
 // This file contains the implementation for interacting with the Trezor hardware
 // wallets. The wire protocol spec can be found on the SatoshiLabs website:
@@ -162,8 +162,8 @@ func (w *trezorDriver) SignTx(path accounts.DerivationPath, tx *types.Transactio
 // trezorDerive sends a derivation request to the Trezor device and returns the
 // ballstest address located on that path.
 func (w *trezorDriver) trezorDerive(derivationPath []uint32) (common.Address, error) {
-	address := new(trezor.ballstestAddress)
-	if _, err := w.trezorExchange(&trezor.ballstestGetAddress{AddressN: derivationPath}, address); err != nil {
+	address := new(trezor.EthereumAddress)
+	if _, err := w.trezorExchange(&trezor.EthereumGetAddress{AddressN: derivationPath}, address); err != nil {
 		return common.Address{}, err
 	}
 	return common.BytesToAddress(address.GetAddress()), nil
@@ -176,7 +176,7 @@ func (w *trezorDriver) trezorSign(derivationPath []uint32, tx *types.Transaction
 	data := tx.Data()
 	length := uint32(len(data))
 
-	request := &trezor.ballstestSignTx{
+	request := &trezor.EthereumSignTx{
 		AddressN:   derivationPath,
 		Nonce:      new(big.Int).SetUint64(tx.Nonce()).Bytes(),
 		GasPrice:   tx.GasPrice().Bytes(),
@@ -197,7 +197,7 @@ func (w *trezorDriver) trezorSign(derivationPath []uint32, tx *types.Transaction
 		request.ChainId = &id
 	}
 	// Send the initiation message and stream content until a signature is returned
-	response := new(trezor.ballstestTxRequest)
+	response := new(trezor.EthereumTxRequest)
 	if _, err := w.trezorExchange(request, response); err != nil {
 		return common.Address{}, nil, err
 	}
@@ -205,7 +205,7 @@ func (w *trezorDriver) trezorSign(derivationPath []uint32, tx *types.Transaction
 		chunk := data[:*response.DataLength]
 		data = data[*response.DataLength:]
 
-		if _, err := w.trezorExchange(&trezor.ballstestTxAck{DataChunk: chunk}, response); err != nil {
+		if _, err := w.trezorExchange(&trezor.EthereumTxAck{DataChunk: chunk}, response); err != nil {
 			return common.Address{}, nil, err
 		}
 	}

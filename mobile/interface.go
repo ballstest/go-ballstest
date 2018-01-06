@@ -1,18 +1,18 @@
-// Copyright 2016 The go-ballstest Authors
-// This file is part of the go-ballstest library.
+// Copyright 2016 The go-ethereum Authors
+// This file is part of the go-ethereum library.
 //
-// The go-ballstest library is free software: you can redistribute it and/or modify
+// The go-ethereum library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// The go-ballstest library is distributed in the hope that it will be useful,
+// The go-ethereum library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the go-ballstest library. If not, see <http://www.gnu.org/licenses/>.
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
 // Contains perverted wrappers to allow crossing over empty interfaces.
 
@@ -92,8 +92,8 @@ func (i *Interface) GetBinary() []byte        { return *i.object.(*[]byte) }
 func (i *Interface) GetBinaries() [][]byte    { return *i.object.(*[][]byte) }
 func (i *Interface) GetAddress() *Address     { return &Address{*i.object.(*common.Address)} }
 func (i *Interface) GetAddresses() *Addresses { return &Addresses{*i.object.(*[]common.Address)} }
-func (i *Interface) ballstestash() *Hash           { return &Hash{*i.object.(*common.Hash)} }
-func (i *Interface) ballstestashes() *Hashes       { return &Hashes{*i.object.(*[]common.Hash)} }
+func (i *Interface) GetHash() *Hash           { return &Hash{*i.object.(*common.Hash)} }
+func (i *Interface) GetHashes() *Hashes       { return &Hashes{*i.object.(*[]common.Hash)} }
 func (i *Interface) GetInt8() int8            { return *i.object.(*int8) }
 func (i *Interface) GetInt16() int16          { return *i.object.(*int16) }
 func (i *Interface) GetInt32() int32          { return *i.object.(*int32) }

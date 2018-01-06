@@ -1,18 +1,18 @@
-// Copyright 2016 The go-ballstest Authors
-// This file is part of the go-ballstest library.
+// Copyright 2016 The go-ethereum Authors
+// This file is part of the go-ethereum library.
 //
-// The go-ballstest library is free software: you can redistribute it and/or modify
+// The go-ethereum library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// The go-ballstest library is distributed in the hope that it will be useful,
+// The go-ethereum library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with the go-ballstest library. If not, see <http://www.gnu.org/licenses/>.
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
 package discv5
 
@@ -514,10 +514,10 @@ func (s *ticketStore) searchLookupDone(lookup lookupInfo, nodes []*Node, ping fu
 	}
 }
 
-func (s *ticketStore) adjustWithTicket(now mclock.AbsTime, tarballstestash common.Hash, t *ticket) {
+func (s *ticketStore) adjustWithTicket(now mclock.AbsTime, tarGetHash common.Hash, t *ticket) {
 	for i, topic := range t.topics {
 		if tt, ok := s.radius[topic]; ok {
-			tt.adjustWithTicket(now, tarballstestash, ticketRef{t, i})
+			tt.adjustWithTicket(now, tarGetHash, ticketRef{t, i})
 		}
 	}
 }
@@ -931,7 +931,7 @@ func (r *topicRadius) nextTarget(forceRegular bool) lookupInfo {
 	return lookupInfo{target: target, topic: r.topic, radiusLookup: false}
 }
 
-func (r *topicRadius) adjustWithTicket(now mclock.AbsTime, tarballstestash common.Hash, t ticketRef) {
+func (r *topicRadius) adjustWithTicket(now mclock.AbsTime, tarGetHash common.Hash, t ticketRef) {
 	wait := t.t.regTime[t.idx] - t.t.issueTime
 	inside := float64(wait)/float64(targetWaitTime) - 0.5
 	if inside > 1 {
@@ -940,15 +940,15 @@ func (r *topicRadius) adjustWithTicket(now mclock.AbsTime, tarballstestash commo
 	if inside < 0 {
 		inside = 0
 	}
-	r.adjust(now, tarballstestash, t.t.node.sha, inside)
+	r.adjust(now, tarGetHash, t.t.node.sha, inside)
 }
 
-func (r *topicRadius) adjust(now mclock.AbsTime, tarballstestash, addrHash common.Hash, inside float64) {
+func (r *topicRadius) adjust(now mclock.AbsTime, tarGetHash, addrHash common.Hash, inside float64) {
 	bucket := r.getBucketIdx(addrHash)
 	//fmt.Println("adjust", bucket, len(r.buckets), inside)
 	if bucket >= len(r.buckets) {
 		return
 	}
 	r.buckets[bucket].adjust(now, inside)
-	delete(r.buckets[bucket].lookupSent, tarballstestash)
+	delete(r.buckets[bucket].lookupSent, tarGetHash)
 }
